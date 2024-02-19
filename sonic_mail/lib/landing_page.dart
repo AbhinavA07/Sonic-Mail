@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:sonic_mail/voice_recognition.dart';
-import 'package:flutter/services.dart'; // Import the SystemNavigator class
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -13,7 +12,6 @@ class LandingPage extends StatefulWidget {
 
 class LandingPageState extends State<LandingPage> {
   FlutterTts flutterTts = FlutterTts();
-  bool _isMicrophonePermissionGranted = false;
 
   @override
   void initState() {
@@ -25,7 +23,7 @@ class LandingPageState extends State<LandingPage> {
 
   Future<void> _announceToUser() async {
     await flutterTts.speak(
-        "Hey, you can sign into your Gmail account. Say 'Yes' to continue or tap the screen to dismiss.").then((_) async {
+        "Hey, you can sign into your Gmail account. Say 'Yes' to continue or tap the screen to repeat again.").then((_) async {
       await Future.delayed(const Duration(seconds: 7));
       _requestMicrophonePermission(); // Call _requestMicrophonePermission() after the announcement
     });
@@ -36,7 +34,6 @@ class LandingPageState extends State<LandingPage> {
   Future<void> _requestMicrophonePermission() async {
     var status = await Permission.microphone.request();
     if (status == PermissionStatus.granted) {
-      _isMicrophonePermissionGranted = true;
       startListening(context); // Start listening for voice commands
     }
   }
@@ -52,7 +49,7 @@ class LandingPageState extends State<LandingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset('assets/app_logo.png'), // Replace with your logo
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
             ],
           ),
         ),
