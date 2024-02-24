@@ -23,8 +23,8 @@ class LandingPageState extends State<LandingPage> {
 
   Future<void> _announceToUser() async {
     await flutterTts.speak(
-        "Hey, you can sign into your Gmail account. Say 'Yes' to continue or tap the screen to repeat again.").then((_) async {
-      await Future.delayed(const Duration(seconds: 7));
+        "Hey, Welcome to Sonic Mail, you can sign into your Gmail account. Say, 'Yes' to continue or tap the screen to repeat again.").then((_) async {
+      await Future.delayed(const Duration(seconds: 10));
       _requestMicrophonePermission(); // Call _requestMicrophonePermission() after the announcement
     });
 

@@ -42,6 +42,7 @@ dependencies:
   permission_handler: ^11.0.1
   flutter_tts: ^3.8.5
   google_speech: ^4.4.0
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:

@@ -28,7 +28,7 @@ void startListening(BuildContext context) async {
           }
           else if(command.contains('no')){
             await flutterTts.speak("Exiting the app").then((_) async {
-              await Future.delayed(const Duration(seconds: 3));
+              await Future.delayed(const Duration(seconds: 2));
               SystemNavigator.pop(); // Close the application
             });
           }
@@ -46,8 +46,8 @@ Future<void> _signInWithGoogle(BuildContext context) async {
   try {
     final GoogleSignInAccount? googleUser = await _googleSignIn.signInSilently();
     if (googleUser != null) {
-      await flutterTts.speak("Signing you in ${googleUser.email}").then((_) async {
-        await Future.delayed(const Duration(seconds: 10));
+      await flutterTts.speak("Signing you in ${googleUser.displayName}").then((_) async {
+        await Future.delayed(const Duration(seconds:3));
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()), // Navigate to HomeScreen
@@ -57,9 +57,13 @@ Future<void> _signInWithGoogle(BuildContext context) async {
       // User not signed in silently, attempt normal sign-in
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser != null) {
-        // Signed in
-        print('Signed in as: ${googleUser.email}');
-        // Navigate to the next screen or perform other actions
+        await flutterTts.speak("Signing you in ${googleUser.displayName}").then((_) async {
+          await Future.delayed(const Duration(seconds: 3));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()), // Navigate to HomeScreen
+          );
+        });
       } else {
         // User canceled the sign-in process
         print('Sign-in canceled');
