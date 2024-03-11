@@ -43,6 +43,8 @@ dependencies:
   flutter_tts: ^3.8.5
   google_speech: ^4.4.0
   http: ^1.1.0
+  shared_preferences: ^2.2.2
+  enough_mail: ^2.1.6
 
 dev_dependencies:
   flutter_test:

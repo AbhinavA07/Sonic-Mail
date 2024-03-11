@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:sonic_mail/inbox/inbox_mail.dart';
+import 'package:sonic_mail/mail/inbox_mail.dart';
+import 'package:sonic_mail/mail/sent_mail.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+
+import 'mail/trash_mail.dart';
 
 bool _isListening = false;
 stt.SpeechToText _speech = stt.SpeechToText();
@@ -37,7 +40,7 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => InboxScreen()),
+                  MaterialPageRoute(builder: (context) => const InboxScreen()),
                 );
               },
               child: const Text('Inbox'),
@@ -45,14 +48,20 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                // Navigate to screen to search for email
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SentMailPage()),
+                );
               },
               child: const Text('Sent'),
             ),
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                // Navigate to screen to search for email
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const TrashMailPage()),
+                );
               },
               child: const Text('Trash'),
             ),
@@ -89,7 +98,7 @@ void startListening(BuildContext context) async {
           if (command.contains('compose')) {
 
           }
-          else if(command.contains('inbox')){
+          else if(command.contains('mail')){
 
           }
           else if(command.contains('sent')){

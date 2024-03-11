@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       themeMode: MediaQuery.of(context).platformBrightness == Brightness.dark
           ? ThemeMode.dark
           : ThemeMode.light, // Set theme mode based on device brightness
-      home: LandingPage(),
+      home: const LandingPage(),
     );
   }
 }

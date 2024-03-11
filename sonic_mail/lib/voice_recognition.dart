@@ -1,76 +1,94 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sonic_mail/home_page.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
 
-bool _isListening = false;
-stt.SpeechToText _speech = stt.SpeechToText();
-FlutterTts flutterTts = FlutterTts();
-GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+class LandingPage extends StatefulWidget {
+  const LandingPage({super.key});
 
-void startListening(BuildContext context) async {
-  if (!_isListening) {
-    bool available = await _speech.initialize(
-      onStatus: (status) => print('onStatus: $status'),
-      onError: (error) => print('onError: $error'),
-    );
-
-    if (available) {
-      _isListening = false;
-      _speech.listen(
-        onResult: (result) async {
-          String command = result.recognizedWords.toLowerCase();
-          print('Command: $command');
-          if (command.contains('yes')) {
-            _signInWithGoogle(context);
-          }
-          else if(command.contains('no')){
-            await flutterTts.speak("Exiting the app").then((_) async {
-              await Future.delayed(const Duration(seconds: 2));
-              SystemNavigator.pop(); // Close the application
-            });
-          }
-          else{
-            startListening(context);
-          }
-        },
-        localeId: 'en-IN',
-      );
-    }
-  }
+  @override
+  LandingPageState createState() => LandingPageState();
 }
 
-Future<void> _signInWithGoogle(BuildContext context) async {
-  try {
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signInSilently();
-    if (googleUser != null) {
-      await flutterTts.speak("Signing you in ${googleUser.displayName}").then((_) async {
-        await Future.delayed(const Duration(seconds:3));
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()), // Navigate to HomeScreen
-        );
-      });
-    } else {
-      // User not signed in silently, attempt normal sign-in
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser != null) {
-        await flutterTts.speak("Signing you in ${googleUser.displayName}").then((_) async {
-          await Future.delayed(const Duration(seconds: 3));
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()), // Navigate to HomeScreen
-          );
-        });
-      } else {
-        // User canceled the sign-in process
-        print('Sign-in canceled');
-      }
+class LandingPageState extends State<LandingPage> {
+  FlutterTts flutterTts = FlutterTts();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _announceToUser(); // Announce to the user when the page is fully rendered
+    });
+  }
+
+  Future<void> _announceToUser() async {
+    await flutterTts.speak(
+        "Hey, Welcome to Sonic Mail, you can sign into your email account. Say, 'Yes' to continue or tap the screen to repeat again.").then((_) async {
+      await Future.delayed(const Duration(seconds: 10));
+      _requestMicrophonePermission(); // Call _requestMicrophonePermission() after the announcement
+    });
+  }
+
+  Future<void> _requestMicrophonePermission() async {
+    var status = await Permission.microphone.request();
+    if (status == PermissionStatus.granted) {
+      startListening(context); // Start listening for voice commands
     }
-  } catch (error) {
-    print('Error signing in: $error');
-    // Handle sign-in error
+  }
+
+  Future<void> _saveEmailAndPassword(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', emailController.text);
+    await prefs.setString('password', passwordController.text);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GestureDetector(
+        onTap: _announceToUser, // Call _announceToUser() whenever the screen is tapped
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/app_logo.png'), // Replace with your logo
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email Address',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => _saveEmailAndPassword(context),
+                child: const Text('Continue'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
