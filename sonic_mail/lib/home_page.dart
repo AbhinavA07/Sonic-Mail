@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:sonic_mail/mail/compose_mail.dart';
 import 'package:sonic_mail/mail/inbox_mail.dart';
 import 'package:sonic_mail/mail/sent_mail.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -31,7 +32,10 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ComposeScreen()),
+                );
               },
               child: const Text('Compose'),
             ),
