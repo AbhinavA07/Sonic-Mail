@@ -31,7 +31,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Navigate to screen to read unread messages
+
               },
               child: const Text('Compose'),
             ),
@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const TrashMailPage()),
+                  MaterialPageRoute(builder: (context) => const TrashScreen()),
                 );
               },
               child: const Text('Trash'),
@@ -70,7 +70,7 @@ class HomeScreen extends StatelessWidget {
               onPressed: () async {
                 await flutterTts.speak("Exiting the app").then((_) async {
                   await Future.delayed(const Duration(seconds: 3));
-                  SystemNavigator.pop(); // Close the application
+                  SystemNavigator.pop();
                 });
               },
               child: const Text('Exit App'),
@@ -92,6 +92,7 @@ void startListening(BuildContext context) async {
     if (available) {
       _isListening = false;
       _speech.listen(
+        localeId: 'en-IN',
         onResult: (result) async {
           String command = result.recognizedWords.toLowerCase();
           print('Command: $command');
@@ -114,7 +115,6 @@ void startListening(BuildContext context) async {
 
           }
         },
-        localeId: 'en-IN',
       );
     }
   }

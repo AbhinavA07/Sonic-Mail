@@ -60,7 +60,7 @@ class _InboxScreenState extends State<InboxScreen> {
           final email = _emails[index];
           return ListTile(
             title: Text(email.decodeSubject() ?? 'No Subject'),
-            subtitle: Text(email.from?.first.mailboxName ?? 'No Sender'),
+            subtitle: Text(email.from?.first.personalName ?? 'No Sender'),
           );
         },
       ),

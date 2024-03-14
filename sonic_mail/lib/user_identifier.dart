@@ -64,7 +64,6 @@ class _UserIdentifierPageState extends State<UserIdentifierPage> {
     await prefs.setString('email', email);
     await prefs.setString('password', password);
 
-    // Optionally, you can navigate to the next screen or perform other actions here
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const HomeScreen()),

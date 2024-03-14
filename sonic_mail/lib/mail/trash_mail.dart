@@ -2,28 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:enough_mail/enough_mail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class TrashMailPage extends StatefulWidget {
-  const TrashMailPage({Key? key}) : super(key: key);
+class TrashScreen extends StatefulWidget {
+  const TrashScreen({super.key});
 
   @override
-  _TrashMailPageState createState() => _TrashMailPageState();
+  _TrashScreenState createState() => _TrashScreenState();
 }
 
-class _TrashMailPageState extends State<TrashMailPage> {
-  List<MimeMessage> _sentMails = [];
+class _TrashScreenState extends State<TrashScreen> {
+  List<MimeMessage> _trashEmails = [];
 
-  Future<void> _fetchSentMails() async {
+  @override
+  void initState() {
+    super.initState();
+    _fetchTrashEmails();
+  }
+
+  Future<void> _fetchTrashEmails() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final String email = prefs.getString('email') ?? '';
       final String password = prefs.getString('password') ?? '';
 
       final client = ImapClient(isLogEnabled: true);
-      await client.connectToServer('imap.gmail.com', 993, isSecure: true);
+      await client.connectToServer('imap.gmail.com', 993);
       await client.login(email, password);
 
-      final mailboxes = await client.listMailboxes();
-      final trashMailbox = mailboxes.firstWhere((mailbox) => mailbox.name == 'Trash');
+      final mailboxes = await client.listMailboxes(path: ''"[Gmail]/Bin"'');
+      final trashMailbox = mailboxes.firstWhere((mailbox) => mailbox.name == "Bin");
       await client.selectMailbox(trashMailbox);
 
       final fetchResult = await client.fetchRecentMessages(
@@ -32,35 +38,29 @@ class _TrashMailPageState extends State<TrashMailPage> {
       );
 
       setState(() {
-        _sentMails = fetchResult.messages;
+        _trashEmails = fetchResult.messages;
       });
 
       await client.logout();
       await client.disconnect();
     } catch (e) {
-      print('Error fetching sent mails: $e');
+      print('Error fetching trash emails: $e');
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchSentMails();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sent Mail'),
+        title: const Text('Trash'),
       ),
       body: ListView.builder(
-        itemCount: _sentMails.length,
+        itemCount: _trashEmails.length,
         itemBuilder: (context, index) {
-          final sentMail = _sentMails[index];
+          final email = _trashEmails[index];
           return ListTile(
-            title: Text(sentMail.decodeSubject() ?? 'No Subject'),
-            subtitle: Text(sentMail.from?.first.mailboxName ?? 'No Sender'),
+            title: Text(email.decodeSubject() ?? 'No Subject'),
+            subtitle: Text(email.from?.first.personalName ?? 'No Sender'),
           );
         },
       ),

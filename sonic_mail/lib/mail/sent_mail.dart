@@ -22,8 +22,8 @@ class _SentMailPageState extends State<SentMailPage> {
       await client.connectToServer('imap.gmail.com', 993, isSecure: true);
       await client.login(email, password);
 
-      final mailboxes = await client.listMailboxes();
-      final sentMailbox = mailboxes.firstWhere((mailbox) => mailbox.name == 'Sent');
+      final mailboxes = await client.listMailboxes(path: '"[Gmail]/Sent Mail"');
+      final sentMailbox = mailboxes.firstWhere((mailbox) => mailbox.name == 'Sent Mail');
       await client.selectMailbox(sentMailbox);
 
       final fetchResult = await client.fetchRecentMessages(

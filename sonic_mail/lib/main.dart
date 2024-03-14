@@ -14,14 +14,14 @@ class MyApp extends StatelessWidget {
       title: 'Voice Email App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        brightness: Brightness.light, // Default to light mode
+        brightness: Brightness.light,
       ),
       darkTheme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: Colors.black, // Set pitch-black scaffold background color
+        scaffoldBackgroundColor: Colors.black,
       ),
       themeMode: MediaQuery.of(context).platformBrightness == Brightness.dark
           ? ThemeMode.dark
-          : ThemeMode.light, // Set theme mode based on device brightness
+          : ThemeMode.light,
       home: const LandingPage(),
     );
   }

@@ -20,7 +20,7 @@ class LandingPageState extends State<LandingPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _announceToUser(); // Announce to the user when the page is fully rendered
+      _announceToUser();
     });
   }
 
@@ -28,14 +28,14 @@ class LandingPageState extends State<LandingPage> {
     await flutterTts.speak(
         "Hey, Welcome to Sonic Mail, you can sign into your email account. Say, 'Yes' to continue or tap the screen to repeat again.").then((_) async {
       await Future.delayed(const Duration(seconds: 10));
-      _requestMicrophonePermission(); // Call _requestMicrophonePermission() after the announcement
+      _requestMicrophonePermission();
     });
   }
 
   Future<void> _requestMicrophonePermission() async {
     var status = await Permission.microphone.request();
     if (status == PermissionStatus.granted) {
-      startListening(context); // Start listening for voice commands
+      startListening(context);
     }
   }
 
@@ -53,12 +53,12 @@ class LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
-        onTap: _announceToUser, // Call _announceToUser() whenever the screen is tapped
+        onTap: _announceToUser,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/app_logo.png'), // Replace with your logo
+              Image.asset('assets/app_logo.png'),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
