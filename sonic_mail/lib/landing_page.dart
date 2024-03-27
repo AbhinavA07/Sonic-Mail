@@ -76,10 +76,10 @@ class LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
-        onTap: _announceToUser,
-        child: Center(
+    return GestureDetector(
+      onTap: _announceToUser,
+      child: Scaffold(
+        body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

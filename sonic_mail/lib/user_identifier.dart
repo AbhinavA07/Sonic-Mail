@@ -66,7 +66,7 @@ class _UserIdentifierPageState extends State<UserIdentifierPage> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      MaterialPageRoute(builder: (context) => HomeScreen()),
     );
   }
 }
